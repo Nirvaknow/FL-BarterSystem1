@@ -2,30 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Barter System Game</title>
+  <title>Barter Market Game</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Barter System Game</h1>
-  <div id="game-container">
-    <div id="user-section">
-      <h2>Your Items</h2>
+  <h1>Marketplace Barter Game</h1>
+  <div id="marketplace">
+    <div class="stall" id="user-stall">
+      <img src="hero.png" alt="You" class="character">
+      <h2>You</h2>
       <ul id="user-items"></ul>
     </div>
-    <div id="merchant-section">
-      <h2>Merchant's Items</h2>
+    <div class="center-market">
+      <img src="market.png" alt="Market" class="market">
+    </div>
+    <div class="stall" id="merchant-stall">
+      <img src="merchant.png" alt="Merchant" class="character merchant-anim">
+      <h2>Merchant</h2>
       <ul id="merchant-items"></ul>
     </div>
-    <div id="trade-section">
-      <h3>Your Offer:</h3>
+  </div>
+  <div id="trade-area">
+    <div>
+      <h3>Your Offer</h3>
       <ul id="user-offer"></ul>
-      <h3>Merchant's Offer:</h3>
+    </div>
+    <div>
+      <h3>Merchant's Offer</h3>
       <ul id="merchant-offer"></ul>
-      <button id="propose-trade">Propose Trade</button>
-      <button id="reset-trade">Reset Offers</button>
-      <div id="result"></div>
     </div>
   </div>
+  <button id="propose-trade">Propose Trade</button>
+  <button id="reset-trade">Reset Offers</button>
+  <div id="result"></div>
   <script src="app.js"></script>
 </body>
 </html>

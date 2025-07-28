@@ -13,6 +13,12 @@ const merchantInventory = [
 let userOffer = [];
 let merchantOffer = [];
 
+function animateTrade(success) {
+  const merch = document.querySelector('.merchant-anim');
+  merch.style.transform = success ? 'scale(1.2) rotate(0deg)' : 'scale(1) rotate(0deg)';
+  setTimeout(() => merch.style.transform = '', 400);
+}
+
 function renderInventory() {
   const userList = document.getElementById("user-items");
   const merchantList = document.getElementById("merchant-items");
@@ -24,7 +30,7 @@ function renderInventory() {
     li.textContent = `${item.name} (${item.value})`;
     const btn = document.createElement("button");
     btn.textContent = "Offer";
-    btn.classList.add('item-btn');
+    btn.className = "item-btn";
     btn.onclick = () => { userOffer.push(item); userInventory.splice(i, 1); renderAll(); };
     li.appendChild(btn);
     userList.appendChild(li);
@@ -35,7 +41,7 @@ function renderInventory() {
     li.textContent = `${item.name} (${item.value})`;
     const btn = document.createElement("button");
     btn.textContent = "Ask";
-    btn.classList.add('item-btn');
+    btn.className = "item-btn";
     btn.onclick = () => { merchantOffer.push(item); merchantInventory.splice(i, 1); renderAll(); };
     li.appendChild(btn);
     merchantList.appendChild(li);
@@ -43,69 +49,66 @@ function renderInventory() {
 }
 
 function renderOffers() {
-  const userOfferList = document.getElementById('user-offer');
-  const merchantOfferList = document.getElementById('merchant-offer');
-  userOfferList.innerHTML = '';
-  merchantOfferList.innerHTML = '';
-  userOffer.forEach((item, i) => {
-    const li = document.createElement("li");
-    li.textContent = `${item.name} (${item.value})`;
-    const btn = document.createElement("button");
-    btn.textContent = "Remove";
-    btn.classList.add('item-btn');
-    btn.onclick = () => { userInventory.push(item); userOffer.splice(i, 1); renderAll(); }
-    li.appendChild(btn);
-    userOfferList.appendChild(li);
-  });
-
-  merchantOffer.forEach((item, i) => {
-    const li = document.createElement("li");
-    li.textContent = `${item.name} (${item.value})`;
-    const btn = document.createElement("button");
-    btn.textContent = "Remove";
-    btn.classList.add('item-btn');
-    btn.onclick = () => { merchantInventory.push(item); merchantOffer.splice(i, 1); renderAll(); }
-    li.appendChild(btn);
-    merchantOfferList.appendChild(li);
-  });
+  function offerList(offerArr, invArr, listId) {
+    const list = document.getElementById(listId);
+    list.innerHTML = '';
+    offerArr.forEach((item, i) => {
+      const li = document.createElement("li");
+      li.textContent = `${item.name} (${item.value})`;
+      const btn = document.createElement("button");
+      btn.textContent = "Remove";
+      btn.className = "item-btn";
+      btn.onclick = () => { invArr.push(item); offerArr.splice(i, 1); renderAll(); };
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+  }
+  offerList(userOffer, userInventory, 'user-offer');
+  offerList(merchantOffer, merchantInventory, 'merchant-offer');
 }
 
 function checkTrade() {
   const userSum = userOffer.reduce((sum, item) => sum + item.value, 0);
   const merchantSum = merchantOffer.reduce((sum, item) => sum + item.value, 0);
-  return Math.abs(userSum - merchantSum) <= 1; // Allow trade if values nearly match
+  return Math.abs(userSum - merchantSum) <= 1;
 }
 
 document.getElementById('propose-trade').onclick = function() {
   const result = document.getElementById('result');
   if (userOffer.length === 0 || merchantOffer.length === 0) {
     result.textContent = "Offer at least one item each side!";
-    result.style.color = "#b91c1c";
+    result.style.color = "#d32f2f";
+    animateTrade(false);
     return;
   }
   if (checkTrade()) {
-    result.textContent = "Trade Successful! Items exchanged.";
-    result.style.color = "#166534";
+    result.textContent = "🎉 Trade Successful! Items exchanged.";
+    result.style.color = "#388e3c";
     userOffer.forEach(item => merchantInventory.push(item));
     merchantOffer.forEach(item => userInventory.push(item));
     userOffer.length = 0;
     merchantOffer.length = 0;
+    animateTrade(true);
     renderAll();
   } else {
-    result.textContent = "Trade Rejected! Offers not fair.";
-    result.style.color = "#ea580c";
+    result.textContent = "⛔ Trade Rejected! Offers not fair.";
+    result.style.color = "#fbc02d";
+    animateTrade(false);
   }
 };
+
 document.getElementById('reset-trade').onclick = function() {
-  result.textContent = "";
+  document.getElementById('result').textContent = "";
   userInventory.push(...userOffer);
   merchantInventory.push(...merchantOffer);
   userOffer.length = 0;
   merchantOffer.length = 0;
   renderAll();
 };
+
 function renderAll() {
   renderInventory();
   renderOffers();
 }
+
 renderAll();
